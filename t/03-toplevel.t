@@ -4,19 +4,30 @@ use warnings;
 use Test::More;
 
 use Object::Pad;
-use Object::PadX::Role::AutoJSON '-toplevel';
-use Cpanel::JSON::XS qw//;
+use Object::PadX::Role::AutoMarshal '-toplevel';
 
-my $json = Cpanel::JSON::XS->new()->convert_blessed(1);
-
-class TestObject2 :does(AutoJSON) {
-  field $name :param = undef;
+class MetaMetaMeta {
+  field $ssn :param;
+  field $phone :param;
+  field $id :param;
 }
 
-my $obj = TestObject2->new(name => "ralph");
+class TestObject2 :does(AutoMarshal) {
+  field $name :param;
+  field $meta :param :MarshalTo(MetaMetaMeta);
+}
 
-my $working = $json->encode($obj);
+my $obj = TestObject2->new(name => "ralph", meta => {ssn => "123-45-6789", phone => "867-5309", id => "none"});
 
-is($working, '{"name":"ralph"}', "basic serialization");
+my $mocked = bless( [
+                 'ralph',
+                 bless( [
+                          "123-45-6789",
+                          "867-5309",
+                          "none"
+                        ], 'MetaMetaMeta' )
+               ], 'TestObject2' );
+
+is_deeply($obj, $mocked, "Object created correctly");
 
 done_testing();
