@@ -8,6 +8,10 @@ use Object::Pad::MOP::Field;
 use Object::Pad::MOP::Class;
 use Syntax::Operator::Equ;
 
+# ABSTRACT: Automated nested object creation with Object::Pad
+
+our $VERSION = "1.0";
+
 # TODO replace these with the real thing as part of the func flags when Object::Pad finally exposes them
 my $_require_value = sub {
   my ($field_meta, $value) = @_;
@@ -18,7 +22,8 @@ my $_require_value = sub {
 
 Object::Pad::MOP::FieldAttr->register( "MarshalTo", permit_hintkey => 'Object::PadX::Role::AutoMarshal', apply => $_require_value );
 
-sub import { 
+sub import {
+  my @imports = @_;
   $^H{'Object::PadX::Role::AutoMarshal'}=1;
 
   if (grep {$_ eq '-toplevel'} @imports) {
@@ -172,6 +177,8 @@ parameters as a hash, not a hashref or positional arguments.
 =item * IT DOES NOT CHECK TYPES.  Do not use this module if you are expecting type checking.
 
 =item * It relies on experimental APIs and will likely break.
+
+=back
 
 =head2 IMPORTS
 
