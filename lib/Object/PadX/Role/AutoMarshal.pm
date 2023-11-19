@@ -10,7 +10,7 @@ use Syntax::Operator::Equ qw/is_strequ/;
 
 # ABSTRACT: Automated nested object creation with Object::Pad
 
-our $VERSION = '1.1';
+our $VERSION = '1.2';
 
 # TODO replace these with the real thing as part of the func flags when Object::Pad finally exposes them
 my $_require_value = sub {
