@@ -1,12 +1,12 @@
 package Object::PadX::Role::AutoMarshal;
 
-use v5.38;
+use v5.26;
 
 use Object::Pad ':experimental(custom_field_attr mop)';
 use Object::Pad::MOP::FieldAttr;
 use Object::Pad::MOP::Field;
 use Object::Pad::MOP::Class;
-use Syntax::Operator::Equ;
+use Syntax::Operator::Equ qw/is_strequ/;
 
 # ABSTRACT: Automated nested object creation with Object::Pad
 
@@ -56,7 +56,7 @@ role Object::PadX::Role::AutoMarshal {
 
         my $newclass = $metafield->get_attribute_value("MarshalTo");
 
-        if ($sigil equ '$') {
+        if (is_strequ($sigil, '$')) {
           # TODO more advanced parser?
           # :KeyValidator?
           if ($newclass =~ /^\[(.*?)\]$/) {
@@ -82,7 +82,7 @@ role Object::PadX::Role::AutoMarshal {
 
             $metafield->value($self) = $newvalue;
           }
-        } elsif ($sigil equ '%') {
+        } elsif (is_strequ($sigil, '%')) {
           my %hash = ();
           for my ($k, $v) ($value->%*) {
             $hash{$k} = $newclass->new($v->%*);
@@ -90,7 +90,7 @@ role Object::PadX::Role::AutoMarshal {
           my $newvalue = \%hash; 
 
           $metafield->value($self) = $newvalue;
-        } elsif ($sigil equ '@') {
+        } elsif (is_strequ($sigil,'@')) {
           $newclass = $1;
 
           my @list = map {$newclass->new($_->%*)} $value->@*;
