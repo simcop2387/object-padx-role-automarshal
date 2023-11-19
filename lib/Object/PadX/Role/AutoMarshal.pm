@@ -1,6 +1,6 @@
 package Object::PadX::Role::AutoMarshal;
 
-use v5.26;
+use v5.36;
 
 use Object::Pad ':experimental(custom_field_attr mop)';
 use Object::Pad::MOP::FieldAttr;
